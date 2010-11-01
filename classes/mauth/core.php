@@ -53,6 +53,6 @@ class MAuth_Core
 	 */
 	public static function login($username, $password)
 	{
-		
+		$user = Model_User::find_by_username($username, self::$config);
 	}
 }

@@ -1,11 +1,11 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
 return array(
-
+	
 	/**
-	 * ORM driver to use for talking to the Database
-	 * @default 	Jelly.
+	 * The column name of the 'username' field for login (probably either username or email, the way you want to identify your user).
+	 * @default		'username'
 	 */
-	'driver'	=> 'Jelly',
+	'login_username'	=> 'username',
 	
 );

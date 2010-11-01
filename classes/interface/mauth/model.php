@@ -10,4 +10,5 @@
 
 interface Interface_MAuth_Model
 {
+	
 }
