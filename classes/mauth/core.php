@@ -21,6 +21,11 @@ class MAuth_Core
 	protected static $config = false;
 	
 	/**
+	 * @var 	Model_User 	The current user
+	 */
+	protected $user = false;
+	
+	/**
 	 * Creates an instance of the MAuth object
 	 *
 	 * @return 	MAuth
@@ -42,6 +47,12 @@ class MAuth_Core
 	protected function __construct()
 	{
 		self::$config = kohana::config('mauth');
+		
+		$cookie_key = self::$config->cookie_prefix .  '_user';
+		if((bool)cookie::get($cookie_key, false))
+		{
+			$this->user = Model_User::find_by_id(cookie::get($cookie_key));
+		}
 	}
 	
 	/**
@@ -51,8 +62,71 @@ class MAuth_Core
 	 * @param 	string 	password
 	 * @return 	bool
 	 */
-	public static function login($username, $password)
+	public function login($username, $password)
 	{
 		$user = Model_User::find_by_username($username, self::$config);
+		if($user)
+		{
+			$password_hash = $this->hash_password($password, $user->email);
+			
+			if($password_hash === $user->password)
+			{
+				// Set this user_id into the cookie:
+				$cookie_key = self::$config->cookie_prefix .  '_user';
+				cookie::set($cookie_key, $user->id);
+				$this->user = $user;
+				return true;
+			}
+		}
+		
+		return false;
 	}
+	
+	/**
+	 * Log a user out of the system
+	 *
+	 * @return 	bool
+	 */
+	public function logout()
+	{
+		$cookie_key = self::$config->cookie_prefix .  '_user';
+		cookie::set($cookie_key, '');
+		$this->user = false;
+		return !(bool)$this->user;
+	}
+	
+	/**
+	 * Whether or not someone is logged in or not.
+	 *
+	 * @return 	bool
+	 */
+	public function logged_in()
+	{
+		return (bool)$this->user;
+	}
+	
+	/**
+	 * Returns the currently active user
+	 *
+	 * @return 	Model_User
+	 */
+	public function get_user()
+	{
+		return $this->user;
+	}
+	
+	/**
+	 * Hashes up a password
+	 *
+	 * @param 	string 	Password to hash
+	 * @param 	string 	Salt to add to the password
+	 * @return 	string
+	 */
+	public function hash_password($password, $salt)
+	{
+		$pw 	= sha1($password);
+		$salt 	= sha1($salt);
+		return $pw;
+	}
+	
 }

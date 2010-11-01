@@ -40,14 +40,25 @@ class Model_MAuth_Jelly_User extends Jelly_Model implements Interface_MAuth_Mode
 	 *
 	 * @param 	string 	Username to search for
 	 * @param 	config 	MAuth config
-	 * @return 	Model_User
+	 * @return 	Model_User|false 	Will return false if it can't find a user.
 	 */
 	public static function find_by_username($username, $config)
 	{
-		// $i = Jelly::factory('User');
-		// 	echo Kohana::debug($i->meta());
-		// 	exit();
-		return Jelly::select('user')->where($config->login_username, '=', $username)->load();
+		$user = Jelly::select('user')->where($config->login_username, '=', $username)->load();
+		return ($user->loaded())? $user : false;
+	}
+	
+	
+	/**
+	 * Finds a user by their ID
+	 *
+	 * @param 	int 	ID to search for
+	 * @return 	Model_User
+	 */
+	public static function find_by_id($id)
+	{
+		$user = Jelly::select('User')->where(':primary_key', '=', $id)->load();
+		return ($user->loaded())? $user : false;
 	}
 	
 }

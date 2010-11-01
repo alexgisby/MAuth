@@ -11,4 +11,12 @@
 interface Interface_MAuth_Model
 {
 	
+	/**
+	 * Find an item by it's ID:
+	 *
+	 * @param 	int 	ID to search for
+	 * @return 	Model
+	 */
+	public static function find_by_id($id);
+	
 }
