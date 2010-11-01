@@ -27,6 +27,18 @@ MAuth is a simple but powerful permissions / authentication module for Kohana 3.
 
 More notes really on how it works.
 
+### Multiple Instances
+
+MAuth supports the idea of multiple login areas in your app. Simply call the instance that it relevant. ie:
+
+	$frontend_auth	= MAuth::instance();	// Default instance.
+	$admin_auth 	= MAuth::instance('admin');
+	
+	if($frontend_auth->logged_in() && $admin_auth->logged_in())
+	{
+		// They have double-validated. This is a weak example but you get the jist.
+	}
+
 ### Choose your ORM
 
 MAuth uses the principle of Fat Model's to allow for any major ORM to interact with it. To choose your ORM,

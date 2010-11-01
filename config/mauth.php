@@ -12,8 +12,7 @@ return array(
 	 * The Cookie prefix for MAuth
 	 * @default 	mauth
 	 */
-	'cookie_prefix'		=> 'mauth',
-	
+	'cookie_prefix'		=> 'auth',
 	
 	/**
 	 * Salt pattern; same as Kohana Auth, define numbers between 1 and 40 to add to the string.
