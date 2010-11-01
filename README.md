@@ -21,3 +21,19 @@ MAuth is a simple but powerful permissions / authentication module for Kohana 3.
 ### Insane Ideas
 
 - Alter the schema of the database to reflect the entities?!
+
+
+## Documentation
+
+More notes really on how it works.
+
+### Choose your ORM
+
+MAuth uses the principle of Fat Model's to allow for any major ORM to interact with it. To choose your ORM,
+just choose which classes the Model_User file extends. Default is Jelly, so:
+
+	class Model_User extends Model_MAuth_Jelly_User
+	
+Seems a bit of a mouthful, but it works.
+
+All 'driver' models should implement the Interface_MAuth_Model interface.

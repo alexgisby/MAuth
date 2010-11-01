@@ -16,6 +16,11 @@ class MAuth_Core
 	protected static $instance = false;
 	
 	/**
+	 * @var 	Config 	The config file associated with MAuth
+	 */
+	protected static $config = false;
+	
+	/**
 	 * Creates an instance of the MAuth object
 	 *
 	 * @return 	MAuth
@@ -26,8 +31,17 @@ class MAuth_Core
 		{
 			self::$instance = new MAuth();
 		}
-		
 		return self::$instance;
+	}
+	
+	/**
+	 * Builds up a new MAuth
+	 *
+	 * @return 	MAuth
+	 */
+	protected function __construct()
+	{
+		self::$config = kohana::config('mauth');
 	}
 	
 	/**
