@@ -73,7 +73,6 @@ class MAuth_Core
 	 */
 	public function login($username, $password)
 	{
-		//$user = Model_User::mauth_find_by_username($username, $this->read_config('login_username'));
 		$user = call_user_func($this->user_model() . '::mauth_find_by_username', $username, $this->read_config('login_username'));
 		if($user)
 		{
@@ -133,8 +132,6 @@ class MAuth_Core
 			$cookie_key = $this->make_cookie_key();
 			if((bool)cookie::get($cookie_key, false))
 			{
-				//$model = $this->user_model();
-				//$this->user = $model::mauth_find_by_id(cookie::get($cookie_key));	// Nice idea, PHP 5.3 only though :(
 				$this->user = call_user_func($this->user_model() . '::mauth_find_by_id', cookie::get($cookie_key));
 			}
 		
