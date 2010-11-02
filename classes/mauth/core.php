@@ -54,13 +54,16 @@ class MAuth_Core
 	 */
 	protected function __construct($name)
 	{
-		$this->name 	= $name;
-		self::$config 	= kohana::config('mauth');
+		$this->name 		= $name;
+		self::$config 		= kohana::config('mauth');
+		$this->user_model 	= $this->read_config('user_model');
 		
 		$cookie_key = $this->make_cookie_key();
 		if((bool)cookie::get($cookie_key, false))
 		{
-			$this->user = Model_User::mauth_find_by_id(cookie::get($cookie_key));
+			//$model = $this->user_model();
+			//$this->user = $model::mauth_find_by_id(cookie::get($cookie_key));	// Nice idea, PHP 5.3 only though :(
+			$this->user = call_user_func($this->user_model() . '::mauth_find_by_id', cookie::get($cookie_key));
 		}
 	}
 	
@@ -73,7 +76,8 @@ class MAuth_Core
 	 */
 	public function login($username, $password)
 	{
-		$user = Model_User::mauth_find_by_username($username, $this->read_config('login_username'));
+		//$user = Model_User::mauth_find_by_username($username, $this->read_config('login_username'));
+		$user = call_user_func($this->user_model() . '::mauth_find_by_username', $username, $this->read_config('login_username'));
 		if($user)
 		{
 			$password_hash = $this->hash_password($password, $user->email);
@@ -179,6 +183,17 @@ class MAuth_Core
 		
 		// Nope, nothing, return the default:
 		return $default;
+	}
+	
+	
+	/**
+	 * Get the name of the 'User-type-objects' model from the config.
+	 *
+	 * @return 	string
+	 */
+	protected function user_model()
+	{
+		return 'Model_' . ucfirst($this->read_config('user_model'));
 	}
 	
 	
