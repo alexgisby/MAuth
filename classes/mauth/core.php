@@ -81,6 +81,10 @@ class MAuth_Core
 				// Set this user_id into the cookie:
 				cookie::set($this->make_cookie_key(), $user->id);
 				$this->user = $user;
+				
+				// Update the users stats:
+				$user->mauth_event_logged_in();
+				
 				return true;
 			}
 		}

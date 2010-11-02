@@ -65,4 +65,19 @@ class Model_MAuth_Jelly_User extends Jelly_Model implements Interface_MAuth_Mode
 		return ($user->loaded())? $user : false;
 	}
 	
+	
+	/**
+	 * Called when the user logs in, allows the model to update it's last-login time and the logins count.
+	 *
+	 * @return 	this
+	 */
+	public function mauth_event_logged_in()
+	{
+		return $this->set(array(
+				'logins' 		=> $this->logins + 1,
+				'last_login'	=> time(),
+			))
+			->save();
+	}
+	
 }
