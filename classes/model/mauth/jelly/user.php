@@ -25,8 +25,12 @@ class Model_MAuth_Jelly_User extends Jelly_Model implements Interface_MAuth_Mode
 				'id' 			=> new Field_Primary,
 				'username'		=> new Field_String,
 				'email'			=> new Field_Email,
-				'password'		=> new Field_Email,
-				'logins'		=> new Field_Integer,
+				'password'		=> new Field_Password(array(
+						'hash_with'	=> array(MAuth::instance(), 'hash_password'),
+					)),
+				'logins'		=> new Field_Integer(array(
+						'default'	=> 0,
+					)),
 				'last_login'	=> new Field_Timestamp(array(
 						'format'	=> 'Y-m-d H:i:s',
 					)),

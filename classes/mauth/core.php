@@ -30,6 +30,11 @@ class MAuth_Core
 	 */
 	protected $name = 'default';
 	
+	/**
+	 * @var 	bool 		If we've tried to get the user or not yet
+	 */
+	protected $load_user_attempted = false;
+	
 	
 	/**
 	 * Creates an instance of the MAuth object
@@ -57,14 +62,6 @@ class MAuth_Core
 		$this->name 		= $name;
 		self::$config 		= kohana::config('mauth');
 		$this->user_model 	= $this->read_config('user_model');
-		
-		$cookie_key = $this->make_cookie_key();
-		if((bool)cookie::get($cookie_key, false))
-		{
-			//$model = $this->user_model();
-			//$this->user = $model::mauth_find_by_id(cookie::get($cookie_key));	// Nice idea, PHP 5.3 only though :(
-			$this->user = call_user_func($this->user_model() . '::mauth_find_by_id', cookie::get($cookie_key));
-		}
 	}
 	
 	/**
@@ -111,6 +108,7 @@ class MAuth_Core
 	 */
 	public function logged_in()
 	{
+		$this->attempt_load_user();
 		return (bool)$this->user;
 	}
 	
@@ -121,7 +119,27 @@ class MAuth_Core
 	 */
 	public function get_user()
 	{
+		$this->attempt_load_user();
 		return $this->user;
+	}
+	
+	/**
+	 * Try and load the current user. Do it here rather than in __construct to keep things lighter.
+	 */
+	protected function attempt_load_user()
+	{
+		if(!$this->load_user_attempted)
+		{
+			$cookie_key = $this->make_cookie_key();
+			if((bool)cookie::get($cookie_key, false))
+			{
+				//$model = $this->user_model();
+				//$this->user = $model::mauth_find_by_id(cookie::get($cookie_key));	// Nice idea, PHP 5.3 only though :(
+				$this->user = call_user_func($this->user_model() . '::mauth_find_by_id', cookie::get($cookie_key));
+			}
+		
+			$this->load_user_attempted = true;
+		}
 	}
 	
 	/**
