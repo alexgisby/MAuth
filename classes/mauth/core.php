@@ -80,9 +80,7 @@ class MAuth_Core
 		$user = call_user_func($this->user_model() . '::mauth_find_by_username', $username, $this->read_config('login_username'));
 		if($user)
 		{
-			$password_hash = $this->hash_password($password, $user->email);
-			
-			if($password_hash === $user->password)
+			if($this->check_password($password, $user))
 			{
 				// Set this user_id into the cookie:
 				cookie::set($this->make_cookie_key(), $user->id);
@@ -133,11 +131,55 @@ class MAuth_Core
 	 * @param 	string 	Salt to add to the password
 	 * @return 	string
 	 */
-	public function hash_password($password, $salt)
+	public function hash_password($password, $salt = false)
 	{
-		$pw 	= sha1($password);
-		$salt 	= sha1($salt);
+		$pw 		= sha1($password);
+		if(!$salt)	$salt = sha1(uniqid(null, true));
+		$pattern	= $this->read_config('salt_pattern');
+		
+		foreach($pattern as $i => $offset)
+		{
+			$front 	= substr($pw, 0, $offset);
+			$tail 	= substr($pw, $offset);
+			$pw = $front . $salt[$i] . $tail;
+		}
+		
 		return $pw;
+	}
+	
+	/**
+	 * Checks if a given password is the same as one attached to a user:
+	 *
+	 * @param 	string 			Password
+	 * @param 	Model_User 		User-type model to check against
+	 * @return 	bool
+	 */
+	public function check_password($password, $user)
+	{
+		$unsalted = $this->unsalt_password($user->password);
+		return (sha1($password) === $unsalted);
+	}
+	
+	
+	/**
+	 * Unsalts a password
+	 *
+	 * @param 	string 	Hashed password to unsalt
+	 * @return 	string 	Unsalted hashed password
+	 */
+	public function unsalt_password($password)
+	{
+		$pattern = $this->read_config('salt_pattern');
+		sort($pattern);
+		$pattern = array_reverse($pattern);
+		foreach($pattern as $i => $offset)
+		{
+			$front 		= substr($password, 0, $offset);
+			$tail 		= substr($password, $offset + 1);			
+			$password	= $front . $tail;
+		}
+		
+		return $password;
 	}
 	
 	
@@ -148,7 +190,7 @@ class MAuth_Core
 	 */
 	protected function make_cookie_key()
 	{
-		return $cookie_key = $this->read_config('cookie_prefix') .  '_' . $this->name;
+		return $this->read_config('cookie_prefix') .  '_' . $this->name;
 	}
 	
 	

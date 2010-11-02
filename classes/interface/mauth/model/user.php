@@ -14,8 +14,8 @@ interface Interface_MAuth_Model_User extends Interface_MAuth_Model
 	 * Finds a user by their username field.
 	 *
 	 * @param 	string 	The username to search for
-	 * @param 	Config 	Current config of MAuth
+	 * @param 	string 	The username field name.
 	 * @return 	Model_User
 	 */
-	public static function mauth_find_by_username($username, $config);
+	public static function mauth_find_by_username($username, $field);
 }

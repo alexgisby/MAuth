@@ -40,7 +40,7 @@ return array(
 	 */
 	'admin'	=> array(
 		
-		'user_model'		=> 'Admin',
+		//'user_model'		=> 'Admin',
 	),
 	
 );
