@@ -151,6 +151,7 @@ class MAuth_Core
 		$pw 		= sha1($password);
 		if(!$salt)	$salt = sha1(uniqid(null, true));
 		$pattern	= $this->read_config('salt_pattern');
+		sort($pattern);
 		
 		foreach($pattern as $i => $offset)
 		{
