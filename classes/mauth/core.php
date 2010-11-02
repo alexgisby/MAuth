@@ -97,7 +97,7 @@ class MAuth_Core
 	 */
 	public function logout()
 	{
-		cookie::set($this->make_cookie_key(), '');
+		cookie::delete($this->make_cookie_key());
 		$this->user = false;
 		return !(bool)$this->user;
 	}
