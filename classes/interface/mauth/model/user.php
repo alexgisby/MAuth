@@ -17,5 +17,5 @@ interface Interface_MAuth_Model_User extends Interface_MAuth_Model
 	 * @param 	Config 	Current config of MAuth
 	 * @return 	Model_User
 	 */
-	public static function find_by_username($username, $config);
+	public static function mauth_find_by_username($username, $config);
 }

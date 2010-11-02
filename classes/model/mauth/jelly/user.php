@@ -39,12 +39,12 @@ class Model_MAuth_Jelly_User extends Jelly_Model implements Interface_MAuth_Mode
 	 * Finds a user by their username
 	 *
 	 * @param 	string 	Username to search for
-	 * @param 	config 	MAuth config
+	 * @param 	string	Field that represents the 'username'
 	 * @return 	Model_User|false 	Will return false if it can't find a user.
 	 */
-	public static function find_by_username($username, $config)
+	public static function mauth_find_by_username($username, $field)
 	{
-		$user = Jelly::select('user')->where($config->login_username, '=', $username)->load();
+		$user = Jelly::select('user')->where($field, '=', $username)->load();
 		return ($user->loaded())? $user : false;
 	}
 	
@@ -55,7 +55,7 @@ class Model_MAuth_Jelly_User extends Jelly_Model implements Interface_MAuth_Mode
 	 * @param 	int 	ID to search for
 	 * @return 	Model_User
 	 */
-	public static function find_by_id($id)
+	public static function mauth_find_by_id($id)
 	{
 		$user = Jelly::select('User')->where(':primary_key', '=', $id)->load();
 		return ($user->loaded())? $user : false;

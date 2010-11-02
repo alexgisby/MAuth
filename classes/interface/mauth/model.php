@@ -17,6 +17,6 @@ interface Interface_MAuth_Model
 	 * @param 	int 	ID to search for
 	 * @return 	Model
 	 */
-	public static function find_by_id($id);
+	public static function mauth_find_by_id($id);
 	
 }

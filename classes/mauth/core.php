@@ -16,7 +16,7 @@ class MAuth_Core
 	protected static $instances = array();
 	
 	/**
-	 * @var 	Config 	The config file associated with MAuth
+	 * @var 	Config 	The config file associated with this instance
 	 */
 	protected static $config = false;
 	
@@ -52,14 +52,15 @@ class MAuth_Core
 	 *
 	 * @return 	MAuth
 	 */
-	protected function __construct()
+	protected function __construct($name)
 	{
-		self::$config = kohana::config('mauth');
+		$this->name 	= $name;
+		self::$config 	= kohana::config('mauth');
 		
-		$cookie_key = self::$config->cookie_prefix .  '_user';
+		$cookie_key = $this->make_cookie_key();
 		if((bool)cookie::get($cookie_key, false))
 		{
-			$this->user = Model_User::find_by_id(cookie::get($cookie_key));
+			$this->user = Model_User::mauth_find_by_id(cookie::get($cookie_key));
 		}
 	}
 	
@@ -72,7 +73,7 @@ class MAuth_Core
 	 */
 	public function login($username, $password)
 	{
-		$user = Model_User::find_by_username($username, self::$config);
+		$user = Model_User::mauth_find_by_username($username, $this->read_config('login_username'));
 		if($user)
 		{
 			$password_hash = $this->hash_password($password, $user->email);
@@ -143,7 +144,42 @@ class MAuth_Core
 	 */
 	protected function make_cookie_key()
 	{
-		return $cookie_key = self::$config->cookie_prefix .  '_' . $this->name;
+		return $cookie_key = $this->read_config('cookie_prefix') .  '_' . $this->name;
 	}
+	
+	
+	/**
+	 * Reads a value from the cascading config
+	 *
+	 * @param 	string 	Config key
+	 * @param 	mixed 	Default value if not found
+	 */
+	protected function read_config($key, $default = false)
+	{
+		// Ok, first things first, see if this is a top-level config:
+		if(isset(self::$config->$key))
+		{
+			return self::$config->$key;
+		}
+		
+		// Now, if there's a name specified for this instance, load it;
+		if($this->name != 'default')
+		{
+			if(array_key_exists($this->name, self::$config) && array_key_exists($key, self::$config[$this->name]))
+			{
+				return self::$config[$this->name][$key];
+			}
+		}
+		
+		// Check the default for a value:
+		if(array_key_exists('default', self::$config) && array_key_exists($key, self::$config['default']))
+		{
+			return self::$config['default'][$key];
+		}
+		
+		// Nope, nothing, return the default:
+		return $default;
+	}
+	
 	
 }
