@@ -27,8 +27,12 @@ class Package_Default
 	/**
 	 * Moderate callback
 	 */
-	public function moderate($user)
+	public static function moderate($user, $topic)
 	{
+		$args = func_get_args();
+		//echo '<br /><b>Running the Moderate Callback with params:</b><br />';
+		//echo '<pre>' . print_r($args, true) . '</pre>';
+		echo '<br /><br />User ID: ' . $user->id . '<br />Topic: ' . $topic . '<br /><br />';
 		return true;
 	}
 }

@@ -322,6 +322,17 @@ class MAuth_Core
 			return self::$permissions[$this->name][$user->id]['rules'][$action];
 		}
 		
+		// Try a callback next:
+		if(array_key_exists($action, self::$permissions[$this->name][$user->id]['callbacks']))
+		{
+			// Get the callback to run and, well, run it!
+			list($class, $function) = self::$permissions[$this->name][$user->id]['callbacks'][$action];
+			echo '<br />Running: ' . $class . '::' . $function . '<br />';
+			
+			$cb_args = array_merge(array($user), $args);
+			return call_user_func_array(array($class, $function), $cb_args);
+		}
+		
 		// All else fails, no, no they can't do that:
 		return false;
 	}
@@ -356,14 +367,20 @@ class MAuth_Core
 			$callbacks 		= array();
 			foreach($packages as $package)
 			{
-				foreach($package->rules as $rule => $value)
+				if(isset($package->callbacks))
 				{
-					$rules[$rule] = $value;
+					foreach($package->rules as $rule => $value)
+					{
+						$rules[$rule] = $value;
+					}
 				}
 				
-				foreach($package->callbacks as $name => $callback)
+				if(isset($package->callbacks))
 				{
-					$callbacks[$name] = $callback;
+					foreach($package->callbacks as $name => $callback)
+					{
+						$callbacks[$name] = array(get_class($package), $callback);
+					}
 				}
 			}
 			

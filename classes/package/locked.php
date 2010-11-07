@@ -8,7 +8,7 @@
  * @author 		Alex Gisby
  */
 
-class Package_Locked extends Package_Default
+class Package_Locked
 {
 	public $precedence = 5;
 	public $rules = array(
