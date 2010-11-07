@@ -90,4 +90,19 @@ class Model_MAuth_Jelly_User extends Jelly_Model implements Interface_MAuth_Mode
 		return $this->meta()->table();
 	}
 	
+	
+	/**
+	 * A shortcut for the Auth::can function, way of checking permissions on a user that isn't logged in:
+	 *
+	 * @param 	string 	action
+	 * @param 	...		Any additional params for the action
+	 * @return 	bool
+	 */
+	public function can($action)
+	{
+		$src_args = func_get_args();
+		$args = array_merge(array($this), $src_args);
+		return call_user_func_array(array(MAuth::instance(), 'user_can'), $args);
+	}
+	
 }
