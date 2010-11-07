@@ -314,6 +314,16 @@ class MAuth_Core
 		$this->build_permissions_for_user($user);
 		
 		print_r(self::$permissions);
+		
+		// First see if the action is in the rules:
+		if(array_key_exists($action, self::$permissions[$this->name][$user->id]['rules']))
+		{
+			// Awesome, permission exists, let em have it:
+			return self::$permissions[$this->name][$user->id]['rules'][$action];
+		}
+		
+		// All else fails, no, no they can't do that:
+		return false;
 	}
 	
 	
