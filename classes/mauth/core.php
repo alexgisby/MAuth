@@ -35,6 +35,16 @@ class MAuth_Core
 	 */
 	protected $load_user_attempted = false;
 	
+	/**
+	 * @var 	array 	Package and user map
+	 */
+	protected static $packages_map = array();
+	
+	/**
+	 * @var 	array 	Permissions drilled down
+	 */
+	protected static $permissions = array();
+	
 	
 	/**
 	 * Creates an instance of the MAuth object
@@ -187,7 +197,7 @@ class MAuth_Core
 	 * @param 	string 	Hashed password to unsalt
 	 * @return 	string 	Unsalted hashed password
 	 */
-	public function unsalt_password($password)
+	protected function unsalt_password($password)
 	{
 		$pattern = $this->read_config('salt_pattern');
 		sort($pattern);
@@ -256,6 +266,100 @@ class MAuth_Core
 	protected function user_model()
 	{
 		return 'Model_' . ucfirst($this->read_config('user_model'));
+	}
+	
+	
+	/**
+	 * -------------- Permissions Functions ---------------------
+	 */
+	
+	/**
+	 * Finds if the current user can do something. Big top-level function.
+	 *
+	 * @param 	string 	Action they want to try and do
+	 * @param 	params	Any extra parameters you want to throw in there.
+	 * @return 	bool
+	 */
+	public function can()
+	{
+		$src_args = func_get_args();
+		$args = array_merge(array($this->get_user()), $src_args);
+		return call_user_func_array(array($this, 'user_can'), $args);
+	}
+	
+	/**
+	 * Finds if a specified user can or can't do something:
+	 *
+	 * @param 	Model 	The user-type object to check
+	 * @param 	string 	Action
+	 * @param 	...		Any extra things to pass along
+	 * @return 	bool
+	 */
+	public function user_can($user, $action)
+	{
+		if(func_num_args() < 1)
+		{
+			throw new Exception('mauth::user_can() must contain at least 2 parameters');
+		}
+		
+		// Get the args and shift off the first two which we know about:
+		$args = func_get_args();
+		array_shift($args);
+		array_shift($args);
+		
+		echo '<br />User Id: ' . $user->id;
+		echo '<br />Action: ' . $action . '<br /><br />';
+		
+		// Build the permissions map thingie if it doesn't exist already:
+		$this->build_permissions_for_user($user);
+		
+		print_r(self::$permissions);
+	}
+	
+	
+	/**
+	 * Builds up the permissions for a particular user
+	 *
+	 * @param 	Model 	User to build for
+	 * @return 	void
+	 */
+	protected function build_permissions_for_user($user)
+	{
+		if(!isset(self::$permissions[$this->name][$user->id]))
+		{
+			// Find all the permissions that they can have:
+			$packages = array();
+			
+			$sql = 'SELECT package FROM packages_' . $user->mauth_table_name() . ' WHERE user_id = ' . $user->id;
+			$res = Database::instance()->query(Database::SELECT, $sql, false);
+			
+			foreach($res as $row)
+			{
+				$pkg_name = $row['package'];
+				$pkg = new $pkg_name();
+				$packages[] = $pkg;
+			}
+			
+			// Sort them as lowest precedence first:
+			$packages 		= mauth_arr::order_by_member($packages, 'precedence');
+			$rules 			= array();
+			$callbacks 		= array();
+			foreach($packages as $package)
+			{
+				foreach($package->rules as $rule => $value)
+				{
+					$rules[$rule] = $value;
+				}
+				
+				foreach($package->callbacks as $name => $callback)
+				{
+					$callbacks[$name] = $callback;
+				}
+			}
+			
+			self::$permissions[$this->name][$user->id]['rules'] 		= $rules;
+			self::$permissions[$this->name][$user->id]['callbacks']		= $callbacks;
+		}
 	}
 	
 	

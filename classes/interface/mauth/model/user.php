@@ -25,4 +25,11 @@ interface Interface_MAuth_Model_User extends Interface_MAuth_Model
 	 * @return 	this
 	 */
 	public function mauth_event_logged_in();
+	
+	/**
+	 * Return the name of the table this object works on
+	 *
+	 * @return 	string
+	 */
+	public function mauth_table_name();
 }

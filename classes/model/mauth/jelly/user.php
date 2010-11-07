@@ -80,4 +80,14 @@ class Model_MAuth_Jelly_User extends Jelly_Model implements Interface_MAuth_Mode
 			->save();
 	}
 	
+	/**
+	 * Return the table name
+	 *
+	 * @return 	string
+	 */
+	public function mauth_table_name()
+	{
+		return $this->meta()->table();
+	}
+	
 }
