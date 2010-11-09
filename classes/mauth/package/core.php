@@ -50,7 +50,6 @@ abstract class MAuth_Package_Core
 	{
 		if(!isset($this->name))
 		{
-			echo 'Setting package name';
 			$this->name = str_replace('Package_', '', get_class($this));
 		}
 		
