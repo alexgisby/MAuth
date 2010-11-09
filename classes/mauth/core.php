@@ -313,14 +313,9 @@ class MAuth_Core
 		array_shift($args);
 		array_shift($args);
 		
-		// echo '<br />User Id: ' . $user->id;
-		// echo '<br />Action: ' . $action . '<br /><br />';
-		
 		// Build the permissions map thingie if it doesn't exist already:
 		$this->build_permissions_for_user($user);
-		
-		//print_r(self::$permissions);
-		
+				
 		// First see if the action is in the rules:
 		if(array_key_exists($action, self::$permissions[$this->name][$user->id]['rules']))
 		{
@@ -333,7 +328,6 @@ class MAuth_Core
 		{
 			// Get the callback to run and, well, run it!
 			list($class, $function) = self::$permissions[$this->name][$user->id]['callbacks'][$action];
-			//echo '<br />Running: ' . $class . '::' . $function . '<br />';
 			
 			$cb_args = array_merge(array($user), $args);
 			return call_user_func_array(array($class, $function), $cb_args);
@@ -373,22 +367,15 @@ class MAuth_Core
 			$callbacks 		= array();
 			foreach($packages as $package)
 			{
-				// if(isset($package->callbacks()))
-				// 				{
-				
-					foreach($package->rules() as $rule => $value)
-					{
-						$rules[$rule] = $value;
-					}
-				//}
-				
-				// if(isset($package->callbacks))
-				// 				{
-					foreach($package->callbacks() as $name => $callback)
-					{
-						$callbacks[$name] = array(get_class($package), $callback);
-					}
-				//}
+				foreach($package->rules() as $rule => $value)
+				{
+					$rules[$rule] = $value;
+				}
+
+				foreach($package->callbacks() as $name => $callback)
+				{
+					$callbacks[$name] = array(get_class($package), $callback);
+				}
 			}
 			
 			self::$permissions[$this->name][$user->id]['rules'] 		= $rules;
