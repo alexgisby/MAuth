@@ -105,4 +105,16 @@ class Model_MAuth_Jelly_User extends Jelly_Model implements Interface_MAuth_Mode
 		return call_user_func_array(array(MAuth::instance(), 'user_can'), $args);
 	}
 	
+	
+	/**
+	 * Alias for checking if a user has a package attached to them or not
+	 *
+	 * @param 	string 	Package name
+	 * @return 	bool
+	 */
+	public function has_package($name)
+	{
+		return MAuth::instance()->user_has_package($this, $name);
+	}
+	
 }
