@@ -21,23 +21,129 @@ abstract class MAuth_Package_Core
 	protected $callbacks = array();
 	
 	/**
-	 * Sets up the permissions for this set.
-	 *
-	 * @return 	void
+	 * @var 	int 	The precedence or importance of this package
 	 */
-	//abstract public static function initialize();
+	public $precedence = 1;
+	
+
+	/**
+	 * @return this
+	 */
+	public function __construct()
+	{
+		$this->init();
+	}
 	
 	
 	/**
-	 * Adds rules to this package
-	 *
-	 * @param 	array 	Rules to add
-	 * @return 	this
+	 * Initializes the Package, adding rules and callbacks
+	 * [!!] MUST call parent::init();! Otherwise puppies will die!
+	 * 
+	 * @return this
 	 */
-	public function add_rules(array $rules)
+	protected function init()
 	{
-		$this->rules = array_merge($this->rules, $rules);
+		return $this;
 	}
 	
+	
+	/**
+	 * Adds a rule (simple yes-no response) to a package
+	 *
+	 * @param 	string 	action
+	 * @param 	bool 	Yes or No for users of this package
+	 * @return 	this
+	 */
+	protected function add_rule($action, $response)
+	{
+		$this->rules[$action] = $response;
+		return $this;
+	}
+	
+	
+	/**
+	 * Adds a whole slew of rules from an array, the key being the action and the value being the response
+	 *
+	 * @param 	array 	Rules
+	 * @return 	this
+	 */
+	protected function add_rules(array $rules)
+	{
+		foreach($rules as $action => $response)
+		{
+			$this->add_rule($action, $response);
+		}
+		
+		return $this;
+	}
+	
+	
+	/**
+	 * Returns the array of rules
+	 *
+	 * @return 	array
+	 */
+	public function rules()
+	{
+		return $this->rules;
+	}
+	
+	
+	/**
+	 * Adds a callback to this package
+	 *
+	 * @param 	string 	Action
+	 * @param 	string 	Callback static function
+	 * @return 	this
+	 */
+	protected function add_callback($action, $function)
+	{
+		$this->callbacks[$action] = $function;
+		return $this;
+	}
+	
+	
+	/**
+	 * Adds an array of callbacks, key being the action, value being the function
+	 *
+	 * @param 	array 	Callbacks
+	 * @return 	this
+	 */
+	protected function add_callbacks(array $callbacks)
+	{
+		foreach($callbacks as $action => $function)
+		{
+			$this->add_callback($action, $function);
+		}
+		
+		return $this;
+	}
+	
+	/**
+	 * Returns all the callbacks
+	 *
+	 * @return 	array
+	 */
+	public function callbacks()
+	{
+		return $this->callbacks;
+	}
+	
+	/**
+	 * Gets or sets the precedence of this package
+	 *
+	 * @param 	int 	Sets the precedence level
+	 * @return 	this|int
+	 */
+	public function precedence($level = false)
+	{
+		if($level === false)
+		{
+			return $this->precedence;
+		}
+		
+		$this->precedence = $level;
+		return $this;
+	}
 	
 }

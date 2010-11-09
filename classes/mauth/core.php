@@ -302,6 +302,12 @@ class MAuth_Core
 			throw new Exception('mauth::user_can() must contain at least 2 parameters');
 		}
 		
+		// Check if there is a user:
+		if(!$user)
+		{
+			return false;
+		}
+		
 		// Get the args and shift off the first two which we know about:
 		$args = func_get_args();
 		array_shift($args);
@@ -367,21 +373,22 @@ class MAuth_Core
 			$callbacks 		= array();
 			foreach($packages as $package)
 			{
-				if(isset($package->callbacks))
-				{
-					foreach($package->rules as $rule => $value)
+				// if(isset($package->callbacks()))
+				// 				{
+				
+					foreach($package->rules() as $rule => $value)
 					{
 						$rules[$rule] = $value;
 					}
-				}
+				//}
 				
-				if(isset($package->callbacks))
-				{
-					foreach($package->callbacks as $name => $callback)
+				// if(isset($package->callbacks))
+				// 				{
+					foreach($package->callbacks() as $name => $callback)
 					{
 						$callbacks[$name] = array(get_class($package), $callback);
 					}
-				}
+				//}
 			}
 			
 			self::$permissions[$this->name][$user->id]['rules'] 		= $rules;

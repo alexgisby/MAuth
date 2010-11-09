@@ -8,20 +8,21 @@
  * @author 		Alex Gisby
  */
 
-class Package_Default
+class Package_Default extends MAuth_Package
 {
-	public $precedence = 1;
-	public $rules = array(
-	
-		'post'	=> true,
-		
-	);
-	
-	public $callbacks = array(
-	
-		'moderate'	=> 'moderate'
-		
-	);
+	/**
+	 * Initialize the Package and the parent
+	 *
+	 * @return this
+	 */
+	public function init()
+	{
+		$this->precedence(1)
+				->add_rule('post', true)
+				->add_callback('moderate', 'moderate');
+				
+		return parent::init();
+	}
 	
 	
 	/**

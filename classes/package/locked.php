@@ -8,12 +8,13 @@
  * @author 		Alex Gisby
  */
 
-class Package_Locked
+class Package_Locked extends MAuth_Package
 {
-	public $precedence = 5;
-	public $rules = array(
+	public function init()
+	{
+		$this->precedence(5);
+		$this->add_rule('post', false);
+		return parent::init();
+	}
 	
-		'post'	=> false,
-		
-	);
 }
