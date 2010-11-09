@@ -12,8 +12,9 @@ class Package_Locked extends MAuth_Package
 {
 	public function init()
 	{
-		$this->precedence(5);
-		$this->add_rule('post', false);
+		$this->precedence(5)
+				->add_rule('post', false);
+				
 		return parent::init();
 	}
 	

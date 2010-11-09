@@ -25,6 +25,11 @@ abstract class MAuth_Package_Core
 	 */
 	public $precedence = 1;
 	
+	/**
+	 * @var 	string 	Package Name
+	 */
+	protected $name;
+	
 
 	/**
 	 * @return this
@@ -43,6 +48,30 @@ abstract class MAuth_Package_Core
 	 */
 	protected function init()
 	{
+		if(!isset($this->name))
+		{
+			echo 'Setting package name';
+			$this->name = str_replace('Package_', '', get_class($this));
+		}
+		
+		return $this;
+	}
+	
+	
+	/**
+	 * Gets or sets the name of this package
+	 *
+	 * @param 	string 	Optional, set the name
+	 * @return 	string
+	 */
+	public function name($name = false)
+	{
+		if($name === false)
+		{
+			return $this->name;
+		}
+		
+		$this->name = $name;
 		return $this;
 	}
 	

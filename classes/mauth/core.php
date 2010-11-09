@@ -339,6 +339,37 @@ class MAuth_Core
 	
 	
 	/**
+	 * See if the current user has a package
+	 *
+	 * @param 	string 	Package name
+	 * @return 	bool
+	 */
+	public function has_package($name)
+	{
+		return $this->user_has_package($this->get_user(), $name);
+	}
+	
+	
+	/**
+	 * See if any given user has a package specified by $name
+	 *
+	 * @param 	Model 	User type model
+	 * @param 	string 	Name to search for
+	 * @return 	bool
+	 */
+	public function user_has_package($user, $name)
+	{
+		if(!$user)
+		{
+			return false;
+		}
+		
+		$this->build_permissions_for_user($user);
+		return in_array($name, self::$permissions[$this->name][$user->id]['packages']);
+	}
+	
+	
+	/**
 	 * Builds up the permissions for a particular user
 	 *
 	 * @param 	Model 	User to build for
@@ -362,9 +393,10 @@ class MAuth_Core
 			}
 			
 			// Sort them as lowest precedence first:
-			$packages 		= mauth_arr::order_by_member($packages, 'precedence');
-			$rules 			= array();
-			$callbacks 		= array();
+			$packages 			= mauth_arr::order_by_member($packages, 'precedence');
+			$package_names		= array();
+			$rules 				= array();
+			$callbacks 			= array();
 			foreach($packages as $package)
 			{
 				foreach($package->rules() as $rule => $value)
@@ -376,8 +408,13 @@ class MAuth_Core
 				{
 					$callbacks[$name] = array(get_class($package), $callback);
 				}
+				
+				$package_names[] = $package->name();
 			}
 			
+			unset($packages);
+			
+			self::$permissions[$this->name][$user->id]['packages']		= $package_names;
 			self::$permissions[$this->name][$user->id]['rules'] 		= $rules;
 			self::$permissions[$this->name][$user->id]['callbacks']		= $callbacks;
 		}
