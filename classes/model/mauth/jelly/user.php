@@ -107,7 +107,7 @@ class Model_MAuth_Jelly_User extends Jelly_Model implements Interface_MAuth_Mode
 	{
 		$src_args = func_get_args();
 		$args = array_merge(array($this), $src_args);
-		return call_user_func_array(array(MAuth::instance(), 'user_can'), $args);
+		return call_user_func_array(array(MAuth::instance($this->mauth_instance_name), 'user_can'), $args);
 	}
 	
 	
@@ -119,7 +119,7 @@ class Model_MAuth_Jelly_User extends Jelly_Model implements Interface_MAuth_Mode
 	 */
 	public function has_package($name)
 	{
-		return MAuth::instance()->user_has_package($this, $name);
+		return MAuth::instance($this->mauth_instance_name)->user_has_package($this, $name);
 	}
 	
 	
@@ -136,11 +136,59 @@ class Model_MAuth_Jelly_User extends Jelly_Model implements Interface_MAuth_Mode
 		// Check if they already have it:
 		if(!$this->has_package($name))
 		{
-			$package = Database::instance()->escape('Package_' . ucfirst($name));
+			// Make sure each Underscored bit has a capital:
+			$parts = explode('_', $name);
+			foreach($parts as &$part)
+			{
+				$part = ucfirst($part);
+			}
+			$name = implode('_', $parts);
+			
+			$package = Database::instance()->escape('Package_' . $name);
 			$sql = 'INSERT INTO packages_' . $this->mauth_table_name() . '
 						VALUES(' . $this->id . ', ' . $package . ', null)
-					';
+					;';
 			if(Database::instance()->query(Database::INSERT, $sql, false))
+			{
+				MAuth::instance($this->mauth_instance_name)->rebuild_user_permissions($this);
+			}
+		}
+		
+		return $this;
+	}
+	
+	
+	/**
+	 * Removes a package from a user
+	 *
+	 * @param 	string 	Package to remove
+	 * @return 	this
+	 */
+	public function remove_package($name)
+	{
+		$name = strtolower(str_replace('Package_', '', $name));
+		
+		if($this->has_package($name))
+		{
+			// Make sure each Underscored bit has a capital:
+			$parts = explode('_', $name);
+			foreach($parts as &$part)
+			{
+				$part = ucfirst($part);
+			}
+			$name = implode('_', $parts);
+			
+			$package = Database::instance()->escape('Package_' . $name);
+			$sql = 'DELETE FROM packages_' . $this->mauth_table_name() . '
+						WHERE 
+							user_id = ' . $this->id . '
+						  AND
+							package = ' . $package . '
+						LIMIT
+							1
+					;';
+					
+			if(Database::instance()->query(Database::DELETE, $sql, false))
 			{
 				MAuth::instance($this->mauth_instance_name)->rebuild_user_permissions($this);
 			}
