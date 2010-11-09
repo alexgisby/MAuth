@@ -421,4 +421,21 @@ class MAuth_Core
 	}
 	
 	
+	/**
+	 * Forces MAuth to rebuild a users permissions next time around. Used when adding or removing packages.
+	 *
+	 * @param 	Model 	User we're talking about
+	 * @return 	this
+	 */
+	public function rebuild_user_permissions($user)
+	{
+		if(isset(self::$permissions[$this->name][$user->id]))
+		{
+			unset(self::$permissions[$this->name][$user->id]);
+		}
+		
+		return $this;
+	}
+	
+	
 }

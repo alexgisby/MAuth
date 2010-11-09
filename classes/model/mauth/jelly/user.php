@@ -142,7 +142,7 @@ class Model_MAuth_Jelly_User extends Jelly_Model implements Interface_MAuth_Mode
 					';
 			if(Database::instance()->query(Database::INSERT, $sql, false))
 			{
-				//MAuth::instance($this->mauth_instance_name)->rebuild_user($user);
+				MAuth::instance($this->mauth_instance_name)->rebuild_user_permissions($this);
 			}
 		}
 		
