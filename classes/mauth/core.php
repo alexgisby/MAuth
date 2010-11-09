@@ -365,7 +365,7 @@ class MAuth_Core
 		}
 		
 		$this->build_permissions_for_user($user);
-		return in_array($name, self::$permissions[$this->name][$user->id]['packages']);
+		return in_array(strtolower($name), self::$permissions[$this->name][$user->id]['packages']);
 	}
 	
 	
@@ -409,7 +409,7 @@ class MAuth_Core
 					$callbacks[$name] = array(get_class($package), $callback);
 				}
 				
-				$package_names[] = $package->name();
+				$package_names[] = strtolower($package->name());
 			}
 			
 			unset($packages);

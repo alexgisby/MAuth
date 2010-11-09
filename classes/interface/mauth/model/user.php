@@ -32,4 +32,24 @@ interface Interface_MAuth_Model_User extends Interface_MAuth_Model
 	 * @return 	string
 	 */
 	public function mauth_table_name();
+	
+	
+	/**
+	 * A shortcut for the Auth::can function, way of checking permissions on a user that isn't logged in:
+	 *
+	 * @param 	string 	action
+	 * @param 	...		Any additional params for the action
+	 * @return 	bool
+	 */
+	public function can($action);
+	
+	/**
+	 * Alias for checking if a user has a package attached to them or not
+	 *
+	 * @param 	string 	Package name
+	 * @return 	bool
+	 */
+	public function has_package($name);
+	
+	
 }

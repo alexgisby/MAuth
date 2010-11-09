@@ -34,6 +34,11 @@ class Model_MAuth_Jelly_User extends Jelly_Model implements Interface_MAuth_Mode
 				'last_login'	=> new Field_Timestamp(array(
 						'format'	=> 'Y-m-d H:i:s',
 					)),
+					
+				'mauth_instance_name'	=> new Field_String(array(
+						'in_db'		=> false,
+						'default'	=> 'default',
+					)),
 				
 			));
 	}
@@ -115,6 +120,33 @@ class Model_MAuth_Jelly_User extends Jelly_Model implements Interface_MAuth_Mode
 	public function has_package($name)
 	{
 		return MAuth::instance()->user_has_package($this, $name);
+	}
+	
+	
+	/**
+	 * Add a package to a user.
+	 *
+	 * @param 	string 	Package Name
+	 * @return 	this
+	 */
+	public function add_package($name)
+	{
+		$name = strtolower(str_replace('Package_', '', $name));
+		
+		// Check if they already have it:
+		if(!$this->has_package($name))
+		{
+			$package = Database::instance()->escape('Package_' . ucfirst($name));
+			$sql = 'INSERT INTO packages_' . $this->mauth_table_name() . '
+						VALUES(' . $this->id . ', ' . $package . ', null)
+					';
+			if(Database::instance()->query(Database::INSERT, $sql, false))
+			{
+				//MAuth::instance($this->mauth_instance_name)->rebuild_user($user);
+			}
+		}
+		
+		return $this;
 	}
 	
 }
