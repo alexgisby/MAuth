@@ -409,14 +409,26 @@ class MAuth_Core
 			// Find all the permissions that they can have:
 			$packages = array();
 			
-			$sql = 'SELECT package FROM packages_' . $user->mauth_table_name() . ' WHERE user_id = ' . $user->id;
-			$res = Database::instance()->query(Database::SELECT, $sql, false);
-			
-			foreach($res as $row)
+			// Try and find the permissions in the cache before bothering the database:
+			if($cache_packages = $this->read_cache_for_user($user))
 			{
-				$pkg_name = $row['package'];
-				$pkg = new $pkg_name();
-				$packages[] = $pkg;
+				foreach($cache_packages as $pkg_name)
+				{
+					$pkg_name = 'Package_' . ucfirst($pkg_name);
+					$packages[] = new $pkg_name();
+				}
+			}
+			else
+			{
+				$sql = 'SELECT package FROM packages_' . $user->mauth_table_name() . ' WHERE user_id = ' . $user->id;
+				$res = Database::instance()->query(Database::SELECT, $sql, false);
+			
+				foreach($res as $row)
+				{
+					$pkg_name = $row['package'];
+					//$pkg = new $pkg_name();
+					$packages[] = new $pkg_name();
+				}
 			}
 			
 			// Sort them as lowest precedence first:
@@ -489,6 +501,26 @@ class MAuth_Core
 		// Encode and save the file:
 		$encoded = json_encode(self::$permissions[$this->name][$user->id]['packages']);
 		return file_put_contents($this->cache_dir() . '/' . $this->cache_filename($user), $encoded);
+	}
+	
+	
+	/**
+	 * Reads the cache for a user
+	 *
+	 * @param 	Model 	User-type model to look for
+	 * @return 	array|bool
+	 */
+	protected function read_cache_for_user($user)
+	{
+		$filename = $this->cache_dir() . '/' . $this->cache_filename($user);
+		
+		if(file_exists($filename))
+		{
+			$contents = file_get_contents($filename);
+			return json_decode($contents);
+		}
+		
+		return false;
 	}
 	
 	
