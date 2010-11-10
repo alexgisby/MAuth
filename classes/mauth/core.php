@@ -475,6 +475,9 @@ class MAuth_Core
 		if(isset(self::$permissions[$this->name][$user->id]))
 		{
 			unset(self::$permissions[$this->name][$user->id]);
+			
+			// Remove the cache file too:
+			@unlink($this->cache_dir() . '/' . $this->cache_filename($user));
 		}
 		
 		return $this;
