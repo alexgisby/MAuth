@@ -13,6 +13,12 @@ return array(
 	'cookie_prefix'		=> 'auth',
 	
 	/**
+	 * The directory within /cache to write to. MAuth will create it if it doesn't exist
+	 * @default 	mauth
+	 */
+	'cache_dir'			=> 'mauth',
+	
+	/**
 	 * If no other config value is found, this will be used.
 	 */
 	'default' => array(

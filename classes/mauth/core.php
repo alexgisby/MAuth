@@ -444,7 +444,11 @@ class MAuth_Core
 			self::$permissions[$this->name][$user->id]['packages']		= $package_names;
 			self::$permissions[$this->name][$user->id]['rules'] 		= $rules;
 			self::$permissions[$this->name][$user->id]['callbacks']		= $callbacks;
+			
+			// Write to the cache:
+			$this->cache_permissions_for_user($user);
 		}
+		
 	}
 	
 	
@@ -464,5 +468,64 @@ class MAuth_Core
 		return $this;
 	}
 	
+	
+	/**
+	 * ------------------- Caching permissions -------------------------------
+	 */
+	
+	/**
+	 * Cache the permissions for fasterness.
+	 *
+	 * @param 	array 	The permissions to cache
+	 * @return 	bool
+	 */
+	protected function cache_permissions_for_user($user)
+	{
+		$this->prepare_cache();
+		
+		// Generate the filename:
+		$filename = $this->cache_filename($user); //sha1($this->name . '-' . $user->id) . '.txt';
+		
+		// Encode and save the file:
+		$encoded = json_encode(self::$permissions[$this->name][$user->id]['packages']);
+		return file_put_contents($this->cache_dir() . '/' . $this->cache_filename($user), $encoded);
+	}
+	
+	
+	/**
+	 * Prepares the cache for our arrival
+	 */
+	protected function prepare_cache()
+	{
+		$dir = $this->cache_dir();
+		
+		@mkdir($dir);
+		@chmod($dir, 0777);
+		
+		return true;
+	}
+	
+	
+	/**
+	 * Gets the path to the cache directory
+	 *
+	 * @return 	string
+	 */
+	protected function cache_dir()
+	{
+		return kohana::$cache_dir . '/' . $this->read_config('cache_dir');
+	}
+	
+	
+	/**
+	 * Returns the filename of a cache entry for a given user:
+	 *
+	 * @param 	Model 	User-type model
+	 * @return  string
+	 */
+	protected function cache_filename($user)
+	{
+		return sha1($this->name . '-' . $user->id) . '.txt';
+	}
 	
 }
