@@ -368,6 +368,33 @@ class MAuth_Core
 		return in_array(strtolower($name), self::$permissions[$this->name][$user->id]['packages']);
 	}
 	
+	/**
+	 * Get the packages for the current user
+	 *
+	 * @return 	array
+	 */
+	public function user_packages()
+	{
+		return $this->packages_for_user($this->get_user());
+	}
+	
+	
+	/**
+	 * Return the package names attached a given user:
+	 *
+	 * @return 	array
+	 */
+	public function packages_for_user($user)
+	{
+		if(!(bool)$user)
+		{
+			return array();
+		}
+		
+		$this->build_permissions_for_user($user);
+		return self::$permissions[$this->name][$user->id]['packages'];
+	}
+	
 	
 	/**
 	 * Builds up the permissions for a particular user
