@@ -397,6 +397,24 @@ class MAuth_Core
 	
 	
 	/**
+	 * Returns a correctly formatted class name for a given short-package name. So 'default' becomes 'Package_Default'. 'super_awesome' becomes 'Package_Super_Awesome'
+	 *
+	 * @param 	string 	Package short name
+	 * @return 	string
+	 */
+	protected function make_package_class_name($short)
+	{
+		$parts = explode('_', $short);
+		foreach($parts as &$part)
+		{
+			$part = ucfirst($part);
+		}
+		
+		return 'Package_' . implode('_', $parts);
+	}
+	
+	
+	/**
 	 * Builds up the permissions for a particular user
 	 *
 	 * @param 	Model 	User to build for
@@ -414,7 +432,8 @@ class MAuth_Core
 			{
 				foreach($cache_packages as $pkg_name)
 				{
-					$pkg_name = 'Package_' . ucfirst($pkg_name);
+					$pkg_name = $this->make_package_class_name($pkg_name);
+					//$pkg_name = 'Package_' . ucfirst($pkg_name);
 					$packages[] = new $pkg_name();
 				}
 			}
@@ -425,8 +444,7 @@ class MAuth_Core
 			
 				foreach($res as $row)
 				{
-					$pkg_name = $row['package'];
-					//$pkg = new $pkg_name();
+					$pkg_name = $this->make_package_class_name($row['package']);
 					$packages[] = new $pkg_name();
 				}
 			}

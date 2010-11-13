@@ -136,15 +136,7 @@ class Model_MAuth_Jelly_User extends Jelly_Model implements Interface_MAuth_Mode
 		// Check if they already have it:
 		if(!$this->has_package($name))
 		{
-			// Make sure each Underscored bit has a capital:
-			$parts = explode('_', $name);
-			foreach($parts as &$part)
-			{
-				$part = ucfirst($part);
-			}
-			$name = implode('_', $parts);
-			
-			$package = Database::instance()->escape('Package_' . $name);
+			$package = Database::instance()->escape($name);
 			$sql = 'INSERT INTO packages_' . $this->mauth_table_name() . '
 						VALUES(' . $this->id . ', ' . $package . ', null)
 					;';
@@ -170,15 +162,7 @@ class Model_MAuth_Jelly_User extends Jelly_Model implements Interface_MAuth_Mode
 		
 		if($this->has_package($name))
 		{
-			// Make sure each Underscored bit has a capital:
-			$parts = explode('_', $name);
-			foreach($parts as &$part)
-			{
-				$part = ucfirst($part);
-			}
-			$name = implode('_', $parts);
-			
-			$package = Database::instance()->escape('Package_' . $name);
+			$package = Database::instance()->escape($name);
 			$sql = 'DELETE FROM packages_' . $this->mauth_table_name() . '
 						WHERE 
 							user_id = ' . $this->id . '
