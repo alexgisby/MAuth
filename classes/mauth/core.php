@@ -397,6 +397,43 @@ class MAuth_Core
 	
 	
 	/**
+	 * Edit a package on a user. You can apply specific rules to users who are giving you problems by editing their package.
+	 *
+	 * @param 	Model 	User-type model
+	 * @param 	string	Package Name (short name)
+	 * @param 	array 	Changes to the rules.
+	 * @return 	this
+	 */
+	public function edit_package_for_user($user, $package, array $changes)
+	{
+		if(!$user->has_package($package))
+		{
+			return false;
+		}
+		
+		$changes_encoded = (!empty($changes))? json_encode($changes) : '';
+		
+		$sql = 'UPDATE packages_' . $user->mauth_table_name() . '
+					SET
+						extra = ' . Database::instance()->escape($changes_encoded) . '
+					WHERE
+						user_id = ' . $user->id .'
+					  AND
+						package = ' . Database::instance()->escape($package) . '
+					LIMIT
+						1;';
+						
+		if(Database::instance()->query(Database::UPDATE, $sql, true))
+		{
+			$this->rebuild_user_permissions($user);
+			return true;
+		}
+		
+		return false;
+	}
+	
+	
+	/**
 	 * Returns a correctly formatted class name for a given short-package name. So 'default' becomes 'Package_Default'. 'super_awesome' becomes 'Package_Super_Awesome'
 	 *
 	 * @param 	string 	Package short name
