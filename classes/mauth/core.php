@@ -586,7 +586,6 @@ class MAuth_Core
 					if(array_key_exists($pkg_name, $cache_contents['extras']))
 					{
 						$local_extras = $cache_contents['extras'][$pkg_name];
-						echo Kohana::debug($local_extras);
 					}
 					else
 					{
