@@ -125,6 +125,17 @@ abstract class MAuth_Package_Core
 		return $this->rules;
 	}
 	
+	/**
+	 * Returns the response for a given rule
+	 *
+	 * @param 	string 	Action
+	 * @return 	bool
+	 */
+	public function rule($action)
+	{
+		return (array_key_exists($action, $this->rules))? $this->rules[$action] : false;
+	}
+	
 	
 	/**
 	 * Adds a callback to this package

@@ -472,7 +472,21 @@ class MAuth_Core
 			return false;
 		}
 		
-		$changes_encoded = (!empty($changes))? json_encode($changes) : '';
+		// To save on writing to the database when we don't need to, let's see if the changes actually change anything:
+		$pkg_name = $this->make_package_class_name($package);
+		$pkg = new $pkg_name();
+		
+		$real_changes = array();
+		foreach($changes as $action => $response)
+		{
+			if($pkg->rule($action) !== $response)
+			{
+				$real_changes[$action] = $response;
+			}
+		}
+		
+		// Encode and save
+		$changes_encoded = (!empty($real_changes))? json_encode($real_changes) : '';
 		
 		$sql = 'UPDATE packages_' . $user->mauth_table_name() . '
 					SET
