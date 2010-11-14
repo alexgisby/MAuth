@@ -32,11 +32,20 @@ abstract class MAuth_Package_Core
 	
 
 	/**
+	 * Build the permissions object. You can overload the default rules for this package by providing an associative array of action => response.
+	 *
+	 * @param 	array 	(optional) Exceptions to the given rules.
 	 * @return this
 	 */
-	public function __construct()
+	public function __construct($exceptions = array())
 	{
 		$this->init();
+		
+		// Append the extra permissions onto the ruleset if there are any:
+		foreach($exceptions as $action => $response)
+		{
+			$this->add_rule($action, $response);
+		}
 	}
 	
 	

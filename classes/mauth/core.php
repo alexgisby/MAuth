@@ -465,24 +465,48 @@ class MAuth_Core
 			$packages = array();
 			
 			// Try and find the permissions in the cache before bothering the database:
-			if($cache_packages = $this->read_cache_for_user($user))
+			if($cache_contents = $this->read_cache_for_user($user))
 			{
-				foreach($cache_packages as $pkg_name)
+				echo Kohana::debug($cache_contents);
+				// 				exit();
+				
+				$extras = array();
+				foreach($cache_contents['packages'] as $pkg_name)
 				{
 					$pkg_name = $this->make_package_class_name($pkg_name);
-					//$pkg_name = 'Package_' . ucfirst($pkg_name);
-					$packages[] = new $pkg_name();
+					
+					if(array_key_exists($pkg_name, $cache_contents['extras']))
+					{
+						$local_extras = $cache_contents['extras'][$pkg_name];
+						echo Kohana::debug($local_extras);
+					}
+					else
+					{
+						$local_extras = array();
+					}
+					
+					$packages[] = new $pkg_name($local_extras);
+					$extras[$pkg_name] = $local_extras;
 				}
+				
+				// foreach($cache_packages as $pkg_name)
+				// 				{
+				// 					$pkg_name = $this->make_package_class_name($pkg_name);
+				// 					$packages[] = new $pkg_name();
+				// 				}
 			}
 			else
 			{
-				$sql = 'SELECT package FROM packages_' . $user->mauth_table_name() . ' WHERE user_id = ' . $user->id;
+				$sql = 'SELECT package, extra FROM packages_' . $user->mauth_table_name() . ' WHERE user_id = ' . $user->id;
 				$res = Database::instance()->query(Database::SELECT, $sql, false);
 			
 				foreach($res as $row)
 				{
 					$pkg_name = $this->make_package_class_name($row['package']);
-					$packages[] = new $pkg_name();
+					//echo 'Row: ' . $row['extra'] . '<br />';
+					$exceptions = ($row['extra'] != '')? json_decode($row['extra']) : array();
+					$packages[] = new $pkg_name($exceptions);
+					$extras[$pkg_name] = $exceptions;
 				}
 			}
 			
@@ -506,11 +530,10 @@ class MAuth_Core
 				$package_names[] = strtolower($package->name());
 			}
 			
-			unset($packages);
-			
 			self::$permissions[$this->name][$user->id]['packages']		= $package_names;
 			self::$permissions[$this->name][$user->id]['rules'] 		= $rules;
 			self::$permissions[$this->name][$user->id]['callbacks']		= $callbacks;
+			self::$permissions[$this->name][$user->id]['extras']		= $extras;
 			
 			// Write to the cache:
 			$this->cache_permissions_for_user($user);
@@ -551,14 +574,26 @@ class MAuth_Core
 	 */
 	protected function cache_permissions_for_user($user)
 	{
-		$this->prepare_cache();
+		if($this->read_config('cache'))
+		{
+			$this->prepare_cache();
 		
-		// Generate the filename:
-		$filename = $this->cache_filename($user); //sha1($this->name . '-' . $user->id) . '.txt';
+			// Generate the filename:
+			$filename = $this->cache_filename($user); //sha1($this->name . '-' . $user->id) . '.txt';
 		
-		// Encode and save the file:
-		$encoded = json_encode(self::$permissions[$this->name][$user->id]['packages']);
-		return file_put_contents($this->cache_dir() . '/' . $this->cache_filename($user), $encoded);
+			// Encode and save the file:
+			$encoded = json_encode(array(
+						'packages' 	=> self::$permissions[$this->name][$user->id]['packages'], 
+						'extras'	=> self::$permissions[$this->name][$user->id]['extras'],
+			));
+			
+			echo '<hr />Encoded: ' . $encoded . '<hr />';
+			//exit();
+			
+			return file_put_contents($this->cache_dir() . '/' . $this->cache_filename($user), $encoded);
+		}
+		
+		return true;
 	}
 	
 	
@@ -570,12 +605,28 @@ class MAuth_Core
 	 */
 	protected function read_cache_for_user($user)
 	{
-		$filename = $this->cache_dir() . '/' . $this->cache_filename($user);
-		
-		if(file_exists($filename))
+		if($this->read_config('cache'))
 		{
-			$contents = file_get_contents($filename);
-			return json_decode($contents);
+			$filename = $this->cache_dir() . '/' . $this->cache_filename($user);
+		
+			if(file_exists($filename))
+			{
+				$contents 	= file_get_contents($filename);
+				$decoded 	= json_decode($contents);
+				
+				$packages 	= (array)$decoded->packages;
+				$extras 	= (array)$decoded->extras;
+				
+				// Unencode the extras array:
+				// $extras = array();
+				// 				foreach($decoded->extras as $package => $extra)
+				// 				{
+				// 					
+				// 					//$extras[$package] = (array)json_decode($extra);
+				// 				}
+				
+				return array('packages' => $packages, 'extras' => $extras);
+			}
 		}
 		
 		return false;
