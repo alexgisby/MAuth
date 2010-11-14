@@ -397,6 +397,67 @@ class MAuth_Core
 	
 	
 	/**
+	 * Add a package to a user.
+	 *
+	 * @param 	Model	User-type Model instance
+	 * @param 	string 	Package Name
+	 * @return 	this
+	 */
+	public function add_package_for_user($user, $name)
+	{
+		$name = strtolower(str_replace('Package_', '', $name));
+		
+		// Check if they already have it:
+		if(!$this->user_has_package($user, $name))
+		{
+			$package = Database::instance()->escape($name);
+			$sql = 'INSERT INTO packages_' . $user->mauth_table_name() . '
+						VALUES(' . $user->id . ', ' . $package . ', null)
+					;';
+			if(Database::instance()->query(Database::INSERT, $sql, false))
+			{
+				$this->rebuild_user_permissions($user);
+			}
+		}
+		
+		return $this;
+	}
+	
+	
+	/**
+	 * Removes a package from a user
+	 *
+	 * @param 	Model 	User-type Model instance
+	 * @param 	string 	Package to remove
+	 * @return 	this
+	 */
+	public function remove_package_for_user($user, $name)
+	{
+		$name = strtolower(str_replace('Package_', '', $name));
+		
+		if($this->user_has_package($user, $name))
+		{
+			$package = Database::instance()->escape($name);
+			$sql = 'DELETE FROM packages_' . $user->mauth_table_name() . '
+						WHERE 
+							user_id = ' . $user->id . '
+						  AND
+							package = ' . $package . '
+						LIMIT
+							1
+					;';
+					
+			if(Database::instance()->query(Database::DELETE, $sql, false))
+			{
+				$this->rebuild_user_permissions($user);
+			}
+		}
+		
+		return $this;
+	}
+	
+	
+	/**
 	 * Edit a package on a user. You can apply specific rules to users who are giving you problems by editing their package.
 	 *
 	 * @param 	Model 	User-type model

@@ -124,60 +124,27 @@ class Model_MAuth_Jelly_User extends Jelly_Model implements Interface_MAuth_Mode
 	
 	
 	/**
-	 * Add a package to a user.
+	 * Alias for adding a package to a user.
 	 *
-	 * @param 	string 	Package Name
+	 * @param 	string 	Package short-name
 	 * @return 	this
 	 */
 	public function add_package($name)
 	{
-		$name = strtolower(str_replace('Package_', '', $name));
-		
-		// Check if they already have it:
-		if(!$this->has_package($name))
-		{
-			$package = Database::instance()->escape($name);
-			$sql = 'INSERT INTO packages_' . $this->mauth_table_name() . '
-						VALUES(' . $this->id . ', ' . $package . ', null)
-					;';
-			if(Database::instance()->query(Database::INSERT, $sql, false))
-			{
-				MAuth::instance($this->mauth_instance_name)->rebuild_user_permissions($this);
-			}
-		}
-		
+		MAuth::instance($this->mauth_instance_name)->add_package_for_user($this, $name);
 		return $this;
 	}
 	
 	
 	/**
-	 * Removes a package from a user
+	 * Alias for removing packages from a user
 	 *
-	 * @param 	string 	Package to remove
+	 * @param 	string 	Package short-name
 	 * @return 	this
 	 */
 	public function remove_package($name)
 	{
-		$name = strtolower(str_replace('Package_', '', $name));
-		
-		if($this->has_package($name))
-		{
-			$package = Database::instance()->escape($name);
-			$sql = 'DELETE FROM packages_' . $this->mauth_table_name() . '
-						WHERE 
-							user_id = ' . $this->id . '
-						  AND
-							package = ' . $package . '
-						LIMIT
-							1
-					;';
-					
-			if(Database::instance()->query(Database::DELETE, $sql, false))
-			{
-				MAuth::instance($this->mauth_instance_name)->rebuild_user_permissions($this);
-			}
-		}
-		
+		MAuth::instance($this->mauth_instance_name)->remove_package_for_user($this, $name);
 		return $this;
 	}
 	
