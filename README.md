@@ -1,51 +1,36 @@
 # MAuth
 
-MAuth is a simple but powerful permissions / authentication module for Kohana 3.
+One Auth to rule them all, one Auth to bring any ORM, one Auth to spawn multiple instances, one Auth to create granular permissions.
 
-## Ideas / Brainstorm
+And in the darkness, bind them. [/geekery]
 
-### Sane Ideas
+## What is this MAuth creature?
 
-- Database based permissions (JSON encoded probably)
-- Default permissions list in config
-- Needs a permissions creator (MPackage)
-	- Set specific entities of the permissions, if not set, revert to default.
-- Multiple Packages per user.
-- Packages also stored in the database?
-- Can have callback functions for permissions entities.
-- ORM agnostic, favours Jelly.
-- Simple and secure.
+MAuth is (another) Auth library for Kohana 3, but this one aims to be a bit different.
 
-- ? Multiple authentication layers? So You can be logged into the main site, but not a sub-site?
+- **ORM Agnostic**: MAuth doesn't care if you use Kohana's ORM, Jelly, Sprig or anything else. You can choose whatever ORM you like, and we have drivers ready to go for the aforementioned three.
+- **Create Multiple Instances**: Need a completely seperate login system for your admins and customers? On different tables? With different permissions? Not a problem.
+- **Simple, powerful permissions**: Using Packages you can create extremely granular, powerful permissions, all through a very simple API.
+- **Light.ish**: With power comes responsibility, MAuth is designed to be as fast as possible whilst maintaining a great feature set.
 
-### Insane Ideas
+## How do I get it?
 
-- Alter the schema of the database to reflect the entities?!
-
-
-## Documentation
-
-More notes really on how it works.
-
-### Multiple Instances
-
-MAuth supports the idea of multiple login areas in your app. Simply call the instance that it relevant. ie:
-
-	$frontend_auth	= MAuth::instance();	// Default instance.
-	$admin_auth 	= MAuth::instance('admin');
+Download it from GitHub, or install as a submodule if you're feeling fancy.
 	
-	if($frontend_auth->logged_in() && $admin_auth->logged_in())
-	{
-		// They have double-validated. This is a weak example but you get the jist.
-	}
-
-### Choose your ORM
-
-MAuth uses the principle of Fat Model's to allow for any major ORM to interact with it. To choose your ORM,
-just choose which classes the Model_User file extends. Default is Jelly, so:
-
-	class Model_User extends Model_MAuth_Jelly_User
+	git submodule add git@github.com:alexgisby/MAuth.git modules/mauth
 	
-Seems a bit of a mouthful, but it works.
+The master branch will always be stable, the dev branch is always unstable.
 
-All 'driver' models should implement the Interface_MAuth_Model interface.
+## Docs?
+
+I'm a documentation whore, so the code is all commented to the hilt, and this guide will be kept up to date. Enable the userguide module in your Kohana and view it locally.
+
+## License?
+
+MAuth is licensed under the MIT license, meaning you can do (almost) anything with it. Include it in commercial project, or open source ones.
+
+A mention is always nice, and if you use this module, let me know. That said, I provide this code with zero (0) warranty. If it breaks your wonder-project, sorry but it's your problem.
+
+## Author?
+
+Me, Alex Gisby. Follow me on Twitter if you like (@alexgisby).
