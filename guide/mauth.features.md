@@ -8,7 +8,7 @@ And in the darkness, bind them. [/geekery]
 
 MAuth is (another) Auth library for Kohana 3, but this one aims to be a bit different.
 
-- **ORM Agnostic**: MAuth doesn't care if you use Kohana's ORM, Jelly, Sprig or anything else. You can choose whatever ORM you like, and we have drivers ready to go for the aforementioned three.
+- **ORM Agnostic**: MAuth doesn't care if you use Kohana's ORM, Jelly or anything else. You can choose whatever ORM you like, and we have drivers ready to go for the aforementioned two.
 - **Create Multiple Instances**: Need a completely seperate login system for your admins and customers? On different tables? With different permissions? Not a problem.
 - **Simple, powerful permissions**: Using [Packages](mauth.packages) you can create extremely granular, powerful permissions, all through a very simple API.
 - **Light.ish**: With power comes responsibility, MAuth is designed to be as fast as possible whilst maintaining a great feature set.
@@ -33,4 +33,4 @@ A mention is always nice, and if you use this module, let me know. That said, I 
 
 ## Author?
 
-Me, Alex Gisby. Follow me on Twitter if you like (@alexgisby).
+Me, Alex Gisby. Follow me on Twitter if you like ([@alexgisby](http://twitter.com/alexgisby)).
