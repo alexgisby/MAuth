@@ -463,7 +463,7 @@ class MAuth_Core
 	 * @param 	Model 	User-type model
 	 * @param 	string	Package Name (short name)
 	 * @param 	array 	Changes to the rules.
-	 * @return 	this
+	 * @return 	bool
 	 */
 	public function edit_package_for_user($user, $package, array $changes)
 	{
@@ -486,7 +486,7 @@ class MAuth_Core
 		}
 		
 		// Encode and save
-		$changes_encoded = (!empty($real_changes))? json_encode($real_changes) : '';
+		$changes_encoded = (!empty($real_changes))? json_encode($real_changes) : null;
 		
 		$sql = 'UPDATE packages_' . $user->mauth_table_name() . '
 					SET
@@ -504,6 +504,40 @@ class MAuth_Core
 			return true;
 		}
 		
+		return false;
+	}
+	
+	
+	/**
+	 * Reset a package in the database, will remove all the extra rules attached to this package
+	 *
+	 * @param	Model 	User-type model
+	 * @param 	string 	Package to reset
+	 * @return 	bool
+	 */
+	public function reset_package_for_user($user, $package)
+	{
+		if(!$user->has_package($package))
+		{
+			return true;	// You have kinda reset it... Never sure what to return in this case...
+		}
+		
+		$sql = 'UPDATE packages_' . $user->mauth_table_name() . '
+					SET
+						extra = NULL
+					WHERE
+						user_id = ' . $user->id . '
+					  AND
+						package = ' . Database::instance()->escape($package) . '
+					LIMIT
+						1;';
+						
+		if(Database::instance()->query(Database::UPDATE, $sql, true))
+		{
+			$this->rebuild_user_permissions($user);
+			return true;
+		}
+
 		return false;
 	}
 	
