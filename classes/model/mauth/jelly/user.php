@@ -148,4 +148,29 @@ class Model_MAuth_Jelly_User extends Jelly_Model implements Interface_MAuth_Mode
 		return $this;
 	}
 	
+	
+	/**
+	 * Alias for editing a package on this user
+	 *
+	 * @param 	string	Package name
+	 * @param 	array 	Changes
+	 * @return 	bool
+	 */
+	public function edit_package($name, array $changes = array())
+	{
+		return MAuth::instance($this->mauth_instance_name)->edit_package_for_user($this, $name, $changes);
+	}
+	
+	
+	/**
+	 * Alias for resetting a package
+	 *
+	 * @param 	string 	package name
+	 * @return 	bool
+	 */
+	public function reset_package($name)
+	{
+		return MAuth::instance($this->mauth_instance_name)->reset_package_for_user($this, $name);
+	}
+	
 }

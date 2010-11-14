@@ -5,7 +5,7 @@
  *
  * @package 	MAuth
  * @category  	Core
- * @author 		Alex Gisby
+ * @author 		Alex Gisby (alex@solution10.com)
  */
 
 class MAuth_Core
