@@ -465,10 +465,9 @@ class MAuth_Core
 			$packages = array();
 			
 			// Try and find the permissions in the cache before bothering the database:
+			$did_read_cache = false;
 			if($cache_contents = $this->read_cache_for_user($user))
 			{
-				echo Kohana::debug($cache_contents);
-				// 				exit();
 				
 				$extras = array();
 				foreach($cache_contents['packages'] as $pkg_name)
@@ -489,11 +488,7 @@ class MAuth_Core
 					$extras[$pkg_name] = $local_extras;
 				}
 				
-				// foreach($cache_packages as $pkg_name)
-				// 				{
-				// 					$pkg_name = $this->make_package_class_name($pkg_name);
-				// 					$packages[] = new $pkg_name();
-				// 				}
+				$did_read_cache = true;
 			}
 			else
 			{
@@ -503,7 +498,6 @@ class MAuth_Core
 				foreach($res as $row)
 				{
 					$pkg_name = $this->make_package_class_name($row['package']);
-					//echo 'Row: ' . $row['extra'] . '<br />';
 					$exceptions = ($row['extra'] != '')? json_decode($row['extra']) : array();
 					$packages[] = new $pkg_name($exceptions);
 					$extras[$pkg_name] = $exceptions;
@@ -536,7 +530,10 @@ class MAuth_Core
 			self::$permissions[$this->name][$user->id]['extras']		= $extras;
 			
 			// Write to the cache:
-			$this->cache_permissions_for_user($user);
+			if(!$did_read_cache)
+			{
+				$this->cache_permissions_for_user($user);
+			}
 		}
 		
 	}
@@ -587,9 +584,6 @@ class MAuth_Core
 						'extras'	=> self::$permissions[$this->name][$user->id]['extras'],
 			));
 			
-			echo '<hr />Encoded: ' . $encoded . '<hr />';
-			//exit();
-			
 			return file_put_contents($this->cache_dir() . '/' . $this->cache_filename($user), $encoded);
 		}
 		
@@ -616,14 +610,6 @@ class MAuth_Core
 				
 				$packages 	= (array)$decoded->packages;
 				$extras 	= (array)$decoded->extras;
-				
-				// Unencode the extras array:
-				// $extras = array();
-				// 				foreach($decoded->extras as $package => $extra)
-				// 				{
-				// 					
-				// 					//$extras[$package] = (array)json_decode($extra);
-				// 				}
 				
 				return array('packages' => $packages, 'extras' => $extras);
 			}
