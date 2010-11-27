@@ -37,7 +37,7 @@ return array(
 		/**
 		 * Salt pattern; same as Kohana Auth, define numbers between 1 and 40 to add to the string.
 		 */
-		'salt_pattern'		=> array(1, 11, 15, 17, 33, 36, 39),
+		'salt_pattern'		=> '1, 11, 15, 17, 33, 36, 39',
 		
 		/**
 		 * Cache the Package Objects for quick access next time:

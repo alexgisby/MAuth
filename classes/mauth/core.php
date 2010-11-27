@@ -164,7 +164,12 @@ class MAuth_Core
 	{
 		$pw 		= sha1($password);
 		if(!$salt)	$salt = sha1(uniqid(null, true));
-		$pattern	= $this->read_config('salt_pattern');
+		$pattern	= explode(',', $this->read_config('salt_pattern'));
+		foreach($pattern as &$num)
+		{
+			$num = trim($num);
+		}
+		
 		sort($pattern);
 		
 		foreach($pattern as $i => $offset)
@@ -199,9 +204,15 @@ class MAuth_Core
 	 */
 	protected function unsalt_password($password)
 	{
-		$pattern = $this->read_config('salt_pattern');
+		$pattern	= explode(',', $this->read_config('salt_pattern'));
+		foreach($pattern as &$num)
+		{
+			$num = trim($num);
+		}
+		
 		sort($pattern);
 		$pattern = array_reverse($pattern);
+		
 		foreach($pattern as $i => $offset)
 		{
 			$front 		= substr($password, 0, $offset);
@@ -237,7 +248,7 @@ class MAuth_Core
 		{
 			return self::$config->$key;
 		}
-		
+				
 		// Now, if there's a name specified for this instance, load it;
 		if($this->name != 'default')
 		{
