@@ -572,13 +572,12 @@ class MAuth_Core
 		{
 			// Find all the permissions that they can have:
 			$packages = array();
+			$extras = array();
 			
 			// Try and find the permissions in the cache before bothering the database:
 			$did_read_cache = false;
 			if($cache_contents = $this->read_cache_for_user($user))
 			{
-				
-				$extras = array();
 				foreach($cache_contents['packages'] as $pkg_name)
 				{
 					$pkg_name = $this->make_package_class_name($pkg_name);
