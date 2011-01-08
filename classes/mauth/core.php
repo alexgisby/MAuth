@@ -75,7 +75,7 @@ class MAuth_Core
 	}
 	
 	/**
-	 * Logs a user into the system
+	 * Logs a user into the system using a username and password.
 	 *
 	 * @param 	string 	username
 	 * @param 	string 	password
@@ -100,6 +100,26 @@ class MAuth_Core
 		}
 		
 		return false;
+	}
+	
+	/**
+	 * Logs in a user simply from their Model.
+	 *
+	 * [!!] We trust that you've done the appropriate checks on this user before logging them in, since no checks are done here.
+	 *
+	 * @param 	Model 	User-type model
+	 * @return 	bool
+	 */
+	public function force_login($user)
+	{
+		// Set this user_id into the cookie:
+		cookie::set($this->make_cookie_key(), $user->id);
+		$this->user = $user;
+		
+		// Update the users stats:
+		$user->mauth_event_logged_in();
+		
+		return true;
 	}
 	
 	/**
