@@ -70,7 +70,16 @@ class MAuth_Core
 	protected function __construct($name)
 	{
 		$this->name 		= $name;
-		self::$config 		= kohana::config('mauth');
+		
+		if(version_compare(kohana::VERSION, '3.2.0', '>='))
+		{
+			self::$config		= kohana::$config->load('mauth');
+		}
+		else
+		{
+			self::$config 		= kohana::config('mauth');
+		}
+		
 		$this->user_model 	= $this->read_config('user_model');
 	}
 	
