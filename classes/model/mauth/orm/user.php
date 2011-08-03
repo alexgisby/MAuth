@@ -16,16 +16,17 @@ class Model_MAuth_ORM_User extends ORM implements Interface_MAuth_Model_User
 	/**
 	 * Saves the current object. Performs the password hashing too if needs be. (mostly copied from the Auth/ORM driver)
 	 *
+	 * @param 	Validation 	In Ko 3.1 and above you can pass in a Validation object. See ORM::save().
 	 * @return  ORM
 	 */
-	public function save()
+	public function save(Validation $validation = null)
 	{
 		if (array_key_exists('password', $this->_changed))
 		{
 			$this->_object['password'] = MAuth::instance($this->mauth_instance_name)->hash_password($this->_object['password']);
 		}
 
-		return parent::save();
+		return parent::save($validation);
 	}
 		
 		
