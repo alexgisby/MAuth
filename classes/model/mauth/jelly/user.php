@@ -26,25 +26,12 @@ elseif(version_compare(kohana::VERSION, '3.1.0', '>='))
 
 					'id' => Jelly::field('primary'),
 
-					'username' => Jelly::field('string', array(
-							'unique'	=> true,
-							'rules'		=> array(
-								array('not_empty'),
-							),
-						)),
+					'username' => Jelly::field('string'),
 
-					'email' => Jelly::field('email', array(
-							'unique'	=> true,
-							'rules'		=> array(
-								array('not_empty'),
-							),
-						)),
+					'email' => Jelly::field('email'),
 
 					'password'	=> Jelly::field('password', array(
 							'hash_with'	=> array(MAuth::instance(), 'hash_password'),
-							'rules'		=> array(
-								array('not_empty'),
-							)
 						)),
 
 					'logins'		=> Jelly::field('integer', array(
@@ -54,15 +41,6 @@ elseif(version_compare(kohana::VERSION, '3.1.0', '>='))
 					'last_login'	=> Jelly::field('timestamp', array(
 							'format'	=> 'Y-m-d H:i:s',
 						)),
-
-					'created'	=> Jelly::field('timestamp', array(
-						'format'			=> 'Y-m-d H:i:s',
-						'auto_now_create'	=> true,
-					)),
-
-					'deleted'	=> Jelly::field('timestamp', array(
-						'format'			=> 'Y-m-d H:i:s',
-					)),
 
 					'mauth_instance_name'	=> Jelly::field('string', array(
 							'in_db'		=> false,
@@ -95,7 +73,7 @@ elseif(version_compare(kohana::VERSION, '3.1.0', '>='))
 		 */
 		public static function mauth_find_by_id($id)
 		{
-			$user = Jelly::query('User')->where(':primary_key', '=', $id)->limit(1)->load();
+			$user = Jelly::query('User')->where(':primary_key', '=', $id)->limit(1)->select();
 			return ($user->loaded())? $user : false;
 		}
 	

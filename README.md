@@ -29,9 +29,13 @@ The master branch will always be stable, the dev branch is always unstable.
 
 Enable the userguide module in your Kohana and go to yoursite.com/guide/mauth.features
 
+## Important Info
+
+**MAuth's built in Models do not have any validation rules. This means you should set up what you want yourself!**
+
 ## License?
 
-MAuth is licensed under the MIT license, meaning you can do (almost) anything with it. Include it in commercial project, or open source ones.
+MAuth is licensed under the [MIT license](http://www.opensource.org/licenses/mit-license.php), meaning you can do (almost) anything with it. Include it in commercial project, or open source ones.
 
 A mention is always nice, and if you use this module, let me know. That said, I provide this code with zero (0) warranty. If it breaks your wonder-project, sorry but it's your problem.
 
