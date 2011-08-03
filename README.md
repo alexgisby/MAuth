@@ -13,6 +13,12 @@ MAuth is (another) Auth library for Kohana 3, but this one aims to be a bit diff
 - **Simple, powerful permissions**: Using Packages you can create extremely granular, powerful permissions, all through a very simple API.
 - **Light.ish**: With power comes responsibility, MAuth is designed to be as fast as possible whilst maintaining a great feature set.
 
+## Support
+
+MAuth supports Kohana 3.0.x and 3.1.x with either Jelly or Kohana ORM right out of the box.
+
+Unfortunately, due to Jelly's slow development these days, Jelly support is not available in Kohana 3.2.x, however you should be able to switch your User models onto ORM without too much difficulty.
+
 ## Is it secret? Is it safe?
 
 MAuth in it's current state is pretty stable, but remember it's a pre-1.0 release, so things can change dramatically.
