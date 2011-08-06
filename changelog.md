@@ -1,9 +1,10 @@
 # Changelog for MAuth
 
-## 0.6 - 31 July 2011
+## 0.6 - 6 August 2011
 
-- Made MAuth compatible with Kohana 3.1.x and 3.2.x.
-- Made the JellyORM Model compatible with the 3.2.x strain.
+- Made MAuth compatible with Kohana 3.1.x and 3.2.x. Now works across all 3.x strains of Kohana.
+- Deprecated support for Jelly on Ko 3.2 due to compatibility issues.
+- Fixed the guide/ folder
 
 ## 0.5.2 - 8th Jan 2011
 
