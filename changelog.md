@@ -1,5 +1,9 @@
 # Changelog for MAuth
 
+## 0.6.1 - 12 Nov 2011
+
+- Re-enabled support for Jelly under Ko 3.2 as creatoro's module now supports it! Yay!
+
 ## 0.6 - 6 August 2011
 
 - Made MAuth compatible with Kohana 3.1.x and 3.2.x. Now works across all 3.x strains of Kohana.

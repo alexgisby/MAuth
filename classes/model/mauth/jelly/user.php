@@ -8,11 +8,7 @@
  * @author 		Alex Gisby
  */
 
-if(version_compare(kohana::VERSION, '3.2.0', '>=') && Request::current()->controller() != 'userguide')
-{
-	throw new Kohana_Exception('MAuth: Sorry, but due to Jelly lacking support for Kohana 3.2, MAuth cannot use Jelly Models. Consider using Kohana ORM for your users model instead.');
-}
-elseif(version_compare(kohana::VERSION, '3.1.0', '>='))
+if(version_compare(kohana::VERSION, '3.1.0', '>='))
 {
 	class Model_MAuth_Jelly_User extends Jelly_Model implements Interface_MAuth_Model_User
 	{

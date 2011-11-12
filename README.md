@@ -15,9 +15,7 @@ MAuth is (another) Auth library for Kohana 3, but this one aims to be a bit diff
 
 ## Support
 
-MAuth supports Kohana 3.0.x and 3.1.x with either Jelly or Kohana ORM right out of the box.
-
-Unfortunately, due to Jelly's slow development these days, Jelly support is not available in Kohana 3.2.x, however you should be able to switch your User models onto ORM without too much difficulty.
+MAuth supports Kohana 3.x (3.0.x, 3.1.x and 3.2.x) with either Jelly or Kohana ORM right out of the box.
 
 ## Is it secret? Is it safe?
 
