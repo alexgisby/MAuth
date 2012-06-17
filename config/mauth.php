@@ -35,9 +35,18 @@ return array(
 		'login_username'	=> 'username',
 	
 		/**
-		 * Salt pattern; same as Kohana Auth, define numbers between 1 and 40 to add to the string.
+		 * ------------------ PHPASS Options ------------------------
 		 */
-		'salt_pattern'		=> '1, 11, 15, 17, 33, 36, 39',
+		
+		/**
+		 * The iteration count to use (a number between 4 and 31, bigger number = slower hashing. Slow = good.)
+		 */
+		'iteration_count' 	=> 8,
+		
+		/**
+		 * The Portable Hashes option in PHPASS
+		 */
+		'portable_hashes' 	=> FALSE,
 		
 		/**
 		 * Cache the Package Objects for quick access next time:

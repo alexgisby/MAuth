@@ -31,6 +31,11 @@ class MAuth_Core
 	protected $name = 'default';
 	
 	/**
+	 * @var 	PasswordHash 	PHPASS instance.
+	 */
+	protected $hasher;
+	
+	/**
 	 * @var 	bool 		If we've tried to get the user or not yet
 	 */
 	protected $load_user_attempted = false;
@@ -81,6 +86,7 @@ class MAuth_Core
 		}
 		
 		$this->user_model 	= $this->read_config('user_model');
+		$this->hasher 		= 
 	}
 	
 	/**
