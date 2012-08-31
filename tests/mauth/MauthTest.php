@@ -7,8 +7,12 @@
  */
 class MauthTest extends Unittest_TestCase
 {
-	public function testTesting()
+	/**
+	 * Tests fetching the default instance of MAuth.
+	 */
+	public function testFetchingDefaultInstance()
 	{
-		$this->assertEquals('Alex', 'Alex');
+		$instance = MAuth::instance();
+		$this->assertTrue($instance instanceof MAuth);
 	}
 }
