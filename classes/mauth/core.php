@@ -183,6 +183,16 @@ class MAuth_Core
 	}
 	
 	/**
+	 * Gets the name of this instance of MAuth
+	 *
+	 * @return 	string
+	 */
+	public function name()
+	{
+		return $this->name;
+	}
+	
+	/**
 	 * Hashes up a password
 	 *
 	 * @param 	string 	Password to hash
