@@ -1,0 +1,12 @@
+<phpunit colors="true" bootstrap="../unittest/bootstrap.php">
+	<testsuites>
+		<testsuite name="MAuth Tests">
+			<file>../unittest/tests.php</file>
+		</testsuite>
+	</testsuites>
+	<groups>
+	  <include>
+		<group>mauth</group>
+	  </include>
+	</groups>
+</phpunit>
