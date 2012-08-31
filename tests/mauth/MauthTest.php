@@ -15,4 +15,14 @@ class MauthTest extends Unittest_TestCase
 		$instance = MAuth::instance();
 		$this->assertTrue($instance instanceof MAuth);
 	}
+	
+	/**
+	 * Tests fetching a named instance.
+	 */
+	public function testFetchingNamedInstance()
+	{
+		$instance = MAuth::instance('namedInstance');
+		$this->assertTrue($instance instanceof MAuth);
+		$this->assertEquals('namedInstance', $instance->name());
+	}
 }
